@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 require 'optparse'
 require 'date'
 
@@ -13,7 +12,6 @@ def calendar(year, month)
 
   (first_day..last_day).each do |date|
     print "   " * date.wday if date == first_day
-
     if date.saturday? && date == today
       print "\e[7m#{date.day.to_s.rjust(2)}\e[0m \n"
     elsif  date.saturday? 
@@ -32,5 +30,3 @@ year = command["y"] ? command["y"].to_i : Date.today.year
 month = command["m"] ? command["m"].to_i : Date.today.month
 
 calendar(year, month)
-
-
