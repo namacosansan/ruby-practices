@@ -9,24 +9,24 @@ def calendar(year, month)
 
   puts  "     #{month}月 #{year}"
   puts "日 月 火 水 木 金 土"
+  print "   " * first_day.wday
 
   (first_day..last_day).each do |date|
-    print "   " * date.wday if date == first_day
-    if date.saturday? && date == today
-      print "\e[7m#{date.day.to_s.rjust(2)}\e[0m \n"
-    elsif  date.saturday? 
-      print "#{date.day.to_s.rjust(2)}\n"
-    elsif  date == today
-      print "\e[7m#{date.day.to_s.rjust(2)}\e[0m "
+    day_str = date.day.to_s.rjust(2)
+    if date == today
+      day_str = "\e[7m#{day_str}\e[0m"
+    end
+    if date.saturday?
+      puts day_str
     else
-      print "#{date.day.to_s.rjust(2)} "
+      print "#{day_str} "
     end
   end
-  print "\n" unless last_day.saturday? 
+  print "\n" unless last_day.saturday?
 end
 
-command = ARGV.getopts("y:m:")
-year = command["y"] ? command["y"].to_i : Date.today.year
-month = command["m"] ? command["m"].to_i : Date.today.month
+options = ARGV.getopts("y:m:")
+year = (options["y"] || Date.today.year).to_i
+month = (options["m"] || Date.today.month).to_i
 
 calendar(year, month)
