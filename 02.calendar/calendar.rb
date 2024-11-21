@@ -32,5 +32,3 @@ year = command["y"] ? command["y"].to_i : Date.today.year
 month = command["m"] ? command["m"].to_i : Date.today.month
 
 calendar(year, month)
-
-
