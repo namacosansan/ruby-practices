@@ -17,10 +17,6 @@ def create_slices(files, slice_size)
   slices.each { |slice| slice.fill(nil, slice.length...max_length) }
 end
 
-def calculate_slices_size(slices)
-  slices.size
-end
-
 def transpose_slices(slices)
   slices.transpose
 end
@@ -39,8 +35,8 @@ def display_length(str)
   str.chars.sum { |char| char.bytesize > 1 ? 2 : 1 }
 end
 
-def format_and_print_files(files, max_length, slices_size)
-  files.each_slice(slices_size) do |group|
+def format_and_print_files(files, max_length, col_size)
+  files.each_slice(col_size) do |group|
     puts group.map { |file|
       next '' if file.nil?
 
@@ -53,8 +49,7 @@ end
 files = fetch_files
 slice_size = calculate_slice_size(files)
 slices = create_slices(files, slice_size)
-slices_size = calculate_slices_size(slices)
 transposed = transpose_slices(slices)
 flattened = flatten_and_clean(transposed)
 max_length = max_file_length(flattened)
-format_and_print_files(flattened, max_length, slices_size).compact
+format_and_print_files(flattened, max_length, COL_SIZE)
