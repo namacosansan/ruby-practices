@@ -21,9 +21,24 @@ def transpose_slices(slices)
   slices.transpose
 end
 
-def output(transposed)
+def max_file_length(files)
+  files.map { |file| display_length(file) }.max
+end
+
+def display_length(str)
+  return 0 if str.nil?
+
+  str.chars.sum { |char| char.bytesize > 1 ? 2 : 1 }
+end
+
+def padding_and_output(transposed, max_length)
   transposed.each do |row|
-    puts row.map { |element| element || '' }.join("\t")
+    puts row.map { |file|
+      next '' if file.nil?
+
+      padding = max_length - display_length(file) + file.length
+      file.ljust(padding)
+    }.join(' ')
   end
 end
 
@@ -31,4 +46,5 @@ files = fetch_files
 slice_size = calculate_slice_size(files)
 slices = create_slices(files, slice_size)
 transposed = transpose_slices(slices)
-output(transposed)
+max_length = max_file_length(files)
+padding_and_output(transposed, max_length)
