@@ -1,10 +1,17 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-COL_SIZE = 3
+require 'optparse'
 
-def fetch_files
-  Dir.glob('*')
+COL_SIZE = 3
+options = ARGV.getopts('a')
+
+def fetch_files(options)
+  if options['a']
+    Dir.entries('.')
+  else
+    Dir.glob('*')
+  end
 end
 
 def calculate_slice_size(files)
@@ -42,7 +49,7 @@ def padding_and_output(transposed, max_length)
   end
 end
 
-files = fetch_files
+files = fetch_files(options)
 slice_size = calculate_slice_size(files)
 slices = create_slices(files, slice_size)
 transposed = transpose_slices(slices)
