@@ -1,14 +1,15 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'optparse'
-
 COL_SIZE = 3
-options = ARGV.getopts('a')
+require 'optparse'
+options = ARGV.getopts('a', 'r')
 
 def fetch_files(options)
   if options['a']
     Dir.entries('.')
+  elsif options['r']
+    Dir.glob('*').reverse
   else
     Dir.glob('*')
   end
