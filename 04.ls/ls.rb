@@ -30,22 +30,18 @@ SPECIAL_BITS = {
 options = ARGV.getopts('a', 'r', 'l')
 COL_SIZE = 3
 
-def fetch_files(options)
-  files = fetch_file_list(options)
-  arrange_files(files)
-end
-
-def fetch_file_list(options)
+def main(options)
   if options['a']
-    Dir.entries('.')
+    files = Dir.entries('.')
   elsif options['r']
-    Dir.glob('*').reverse
+    files = Dir.glob('*').reverse
   elsif options['l']
     l_option
     exit
   else
-    Dir.glob('*')
+    files = Dir.glob('*')
   end
+  arrange_files(files)
 end
 
 def arrange_files(files)
@@ -159,4 +155,4 @@ def l_option_file_hash(stat, l_option_max_lengths)
   }
 end
 
-fetch_files(options)
+main(options)
