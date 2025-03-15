@@ -12,7 +12,7 @@ FILE_TYPE_MAP = {
   0o060000 => 'b',
   0o010000 => 'p',
   0o140000 => 's',
-  0o160000 => 'w' 
+  0o160000 => 'w'
 }.freeze
 
 PERMISSION_BITS = [
@@ -41,7 +41,9 @@ def main(options)
   else
     files = Dir.glob('*')
   end
-  arrange_files(files)
+
+  display_data = arrange_files(files)
+  display_files(display_data)
 end
 
 def arrange_files(files)
@@ -49,7 +51,17 @@ def arrange_files(files)
   slices = create_slices(files, slice_size)
   transposed = transpose_slices(slices)
   max_length = max_file_length(files)
-  padding_and_output(transposed, max_length)
+  padding(transposed, max_length)
+end
+
+def padding(transposed, max_length)
+  transposed.map do |row|
+    row.map { |file| file.to_s.ljust(max_length) }.join(' ')
+  end
+end
+
+def display_files(display_data)
+  display_data.each { |line| puts line }
 end
 
 def calculate_slice_size(files)
@@ -73,12 +85,6 @@ end
 
 def display_length(str)
   str.chars.sum { |char| char.bytesize > 1 ? 2 : 1 }
-end
-
-def padding_and_output(transposed, max_length)
-  transposed.each do |row|
-    puts row.map { |file| file.to_s.ljust(max_length) }.join(' ')
-  end
 end
 
 def l_option
