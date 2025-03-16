@@ -15,26 +15,24 @@ def main(options)
   else
     no_option
   end
-  
 end
 
 
 def l_option
   files = File.open("file1.txt", "r")
   l_option_count = files.read 
-  puts l_option_count.count("\n")
+  puts l_option_count.count("\n") + 1
 end
 
 def w_option
-
-    files = File.open("1.txt", "r")
-
-  puts files.read
+  files = File.open("1.txt", "r")
+  w_option  = files.read
 end
 
 def c_option
-  files = File.open("2.txt", "r")
-  puts files.read
+  files = File.open("file1.txt", "r")
+  c_option  = files.read
+  puts c_option.bytesize
 end
 
 def no_option
@@ -42,9 +40,20 @@ def no_option
   puts files.read
 end
 
-main(options)
+def define_word
+  #スペース（' '）、タブ（\t）、改行（\n）、キャリッジリターン（\r）を何個含むか
+  #isspace()がtrueかどうか。数って数えられる？
+  #isspace()がtrueのものが何個ある？
+end
 
-#文字数をカウントする
-#行数を数える
-#単語数を数える
-#バイト数を数える
+def count_line_breaks
+  #改行（\n）を何個含むか
+end
+
+def bytesize_count
+
+end
+
+
+
+main(options)
