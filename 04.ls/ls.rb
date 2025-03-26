@@ -32,7 +32,7 @@ COL_SIZE = 3
 
 def main(options)
   files = Dir.glob('*')
-  files = a_option(files) if options['a']
+  files = a_option if options['a']
   files = r_option(files) if options['r']
   if options['l']
     l_option(files)
@@ -42,8 +42,8 @@ def main(options)
   end
 end
 
-def a_option(files)
-  Dir.entries('.')
+def a_option
+  Dir.entries('.').sort
 end
 
 def r_option(files)
@@ -92,12 +92,12 @@ def display_length(str)
 end
 
 def l_option(files)
-  l_option_total_blocks(files)
+  puts "total #{l_option_total_blocks(files)}"
   l_option_file_details(files)
 end
 
 def l_option_total_blocks(files)
-  puts(files.sum { |file| File.stat(file).blocks })
+  (files.sum { |file| File.stat(file).blocks })
 end
 
 def l_option_file_details(files)
