@@ -31,19 +31,23 @@ options = ARGV.getopts('a', 'r', 'l')
 COL_SIZE = 3
 
 def main(options)
-  if options['a']
-    files = Dir.entries('.')
-  elsif options['r']
-    files = Dir.glob('*').reverse
-  elsif options['l']
-    l_option
-    exit
+  files = Dir.glob('*')
+  files = a_option if options['a']
+  files = r_option(files) if options['r']
+  if options['l']
+    l_option(files)
   else
-    files = Dir.glob('*')
+    display_data = arrange_files(files)
+    display_files(display_data)
   end
+end
 
-  display_data = arrange_files(files)
-  display_files(display_data)
+def a_option
+  Dir.entries('.').sort
+end
+
+def r_option(files)
+  files.reverse
 end
 
 def arrange_files(files)
@@ -87,14 +91,13 @@ def display_length(str)
   str.chars.sum { |char| char.bytesize > 1 ? 2 : 1 }
 end
 
-def l_option
-  files = Dir.glob('*')
-  l_option_total_blocks(files)
+def l_option(files)
+  puts "total #{l_option_total_blocks(files)}"
   l_option_file_details(files)
 end
 
 def l_option_total_blocks(files)
-  puts(files.sum { |file| File.stat(file).blocks })
+  (files.sum { |file| File.stat(file).blocks })
 end
 
 def l_option_file_details(files)
