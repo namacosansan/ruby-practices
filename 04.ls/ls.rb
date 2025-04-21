@@ -31,22 +31,21 @@ options = ARGV.getopts('a', 'r', 'l')
 COL_SIZE = 3
 
 def main(options)
-  files = Dir.glob('*')
-  files = a_option if options['a']
-  files = r_option(files) if options['r']
+  files = options['a'] ? fetch_all_entries : Dir.glob('*')
+  files = reverse_files(files) if options['r']
+
   if options['l']
-    l_option(files)
+    display_detailed_list(files)
   else
-    display_data = arrange_files(files)
-    display_files(display_data)
+    display_regular_list(files)
   end
 end
 
-def a_option
+def fetch_all_entries
   Dir.entries('.').sort
 end
 
-def r_option(files)
+def reverse_files(files)
   files.reverse
 end
 
@@ -64,8 +63,9 @@ def padding(transposed, max_length)
   end
 end
 
-def display_files(display_data)
-  display_data.each { |line| puts line }
+def display_regular_list(files)
+  arranged_data = arrange_files(files)
+  arranged_data.each { |line| puts line }
 end
 
 def calculate_slice_size(files)
@@ -91,7 +91,7 @@ def display_length(str)
   str.chars.sum { |char| char.bytesize > 1 ? 2 : 1 }
 end
 
-def l_option(files)
+def display_detailed_list(files)
   puts "total #{l_option_total_blocks(files)}"
   l_option_file_details(files)
 end
