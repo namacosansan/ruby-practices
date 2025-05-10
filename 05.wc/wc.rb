@@ -4,71 +4,72 @@
 require 'optparse'
 
 options = ARGV.getopts('l', 'w', 'c')
-
 def main(options)
-  if !$stdin.tty? # パイプがある場合
+  if !$stdin.tty?
     pipe_input(options)
-  elsif !ARGV.empty? # 引数がある場合
+  elsif !ARGV.empty?
     file_input(options)
-  else # 引数もパイプもない場合
+  else
     keyboard_input(options)
   end
 end
 
 def pipe_input(options)
   input = $stdin.read
-  count_and_output(input, options)
+  results = line_and_words_and_bytes(input, options)
+  output(results)
 end
 
 def file_input(options)
+  all_results = []
   ARGV.each do |filename|
     input = File.read(filename)
-    count_and_output(input, options, filename)
+    results = line_and_words_and_bytes(input, options, filename)
+    output(results, filename)
+    all_results << results
   end
+  count_arguments(all_results)
 end
 
 def keyboard_input(options)
-  input = +""
-  while line = gets
+  input = +''
+  while (line = gets)
     input << line
   end
-  count_and_output(input, options)
+  results = line_and_words_and_bytes(input, options)
+  output(results)
 end
 
-def count_and_output(input, options, filename = nil)
+def line_and_words_and_bytes(input, options, _filename = nil)
   lines = input.lines.count
-  words = input.split(/\s+/).reject(&:empty?).count
+  words = input.split(/\s+/).count
   bytes = input.bytesize
 
   results = []
-  results << lines if options["l"]
-  results << words if options["w"]
-  results << bytes if options["c"]
+  results << lines if options['l']
+  results << words if options['w']
+  results << bytes if options['c']
 
-  if results.empty?
-    # オプション無しなら全部出す
-    results = [lines, words, bytes]
-  end
+  results = [lines, words, bytes] if results.empty?
+  results
+end
 
-  print results.join("\t")
+def count_arguments(all_results)
+  return unless ARGV.size >= 2
+
+  sum_count(all_results)
+end
+
+def sum_count(all_results)
+  sum = all_results.transpose.map(&:sum)
+  output(sum, 'total')
+  sum
+end
+
+def output(results, filename = nil)
+  print results.map { |r| r.to_s.rjust(7) }.join("\t")
   print "\t#{filename}" if filename
   puts
 end
 
 main(options)
-=begin
-require 'minitest/autorun'
-
-class Test < Minitest::Test
-
-  def test_standard_input
-    assert_equal 'hello', keyboard_input(hello)
-    #assert_equal '2', fizz_buzz(2)
-    #assert_equal 'Fizz', fizz_buzz(3)
-    #assert_equal '4', fizz_buzz(4)
-    #assert_equal 'Buzz', fizz_buzz(5)
-    #assert_equal 'Fizz', fizz_buzz(6)
-    #assert_equal 'Fizz Buzz', fizz_buzz(15)
-  end
-end
-=end
