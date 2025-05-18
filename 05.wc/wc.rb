@@ -4,23 +4,24 @@
 require 'optparse'
 
 options = ARGV.getopts('l', 'w', 'c')
+
 def main(options)
   if !$stdin.tty?
-    pipe_input(options)
+    process_piped_input(options)
   elsif !ARGV.empty?
-    file_input(options)
+    process_file_input(options)
   else
-    keyboard_input(options)
+    process_keyboard_input(options)
   end
 end
 
-def pipe_input(options)
+def process_piped_input(options)
   input = $stdin.read
   results = line_and_words_and_bytes(input, options)
   output(results)
 end
 
-def file_input(options)
+def process_file_input(options)
   all_results = []
   ARGV.each do |filename|
     input = File.read(filename)
@@ -28,10 +29,10 @@ def file_input(options)
     output(results, filename)
     all_results << results
   end
-  count_arguments(all_results)
+  print_total(all_results) if ARGV.size >= 2
 end
 
-def keyboard_input(options)
+def process_keyboard_input(options)
   input = +''
   while (line = gets)
     input << line
@@ -54,16 +55,9 @@ def line_and_words_and_bytes(input, options, _filename = nil)
   results
 end
 
-def count_arguments(all_results)
-  return unless ARGV.size >= 2
-
-  sum_count(all_results)
-end
-
-def sum_count(all_results)
+def print_total(all_results)
   sum = all_results.transpose.map(&:sum)
   output(sum, 'total')
-  sum
 end
 
 def output(results, filename = nil)
