@@ -7,21 +7,21 @@ options = ARGV.getopts('l', 'w', 'c')
 
 def main(options)
   if !$stdin.tty?
-    process_piped_input(options)
+    process_stdin_input(options)
   elsif !ARGV.empty?
-    process_file_input(options)
+    process_files(options)
   else
-    process_keyboard_input(options)
+    process_stdin_input(options)
   end
 end
 
-def process_piped_input(options)
+def process_stdin_input(options)
   input = $stdin.read
   results = line_and_words_and_bytes(input, options)
   output(results)
 end
 
-def process_file_input(options)
+def process_files(options)
   all_results = []
   ARGV.each do |filename|
     input = File.read(filename)
@@ -30,15 +30,6 @@ def process_file_input(options)
     all_results << results
   end
   print_total(all_results) if ARGV.size >= 2
-end
-
-def process_keyboard_input(options)
-  input = +''
-  while (line = gets)
-    input << line
-  end
-  results = line_and_words_and_bytes(input, options)
-  output(results)
 end
 
 def line_and_words_and_bytes(input, options, _filename = nil)
