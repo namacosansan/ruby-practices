@@ -6,12 +6,10 @@ require 'optparse'
 options = ARGV.getopts('l', 'w', 'c')
 
 def main(options)
-  if !$stdin.tty?
+  if ARGV.empty?
     process_stdin_input(options)
-  elsif !ARGV.empty?
-    process_files(options)
   else
-    process_stdin_input(options)
+    process_files(options)
   end
 end
 
