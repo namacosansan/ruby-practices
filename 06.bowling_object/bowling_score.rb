@@ -5,7 +5,9 @@ class Shot
     @value = value
   end
 
-  attr_reader :value
+  def value
+    @value
+  end
 end
 
 class Frame
@@ -13,7 +15,9 @@ class Frame
     @shots = shots
   end
 
-  attr_reader :shots
+  def shots
+    @shots
+  end
 
   def self.from_input(input)
     values = input.split(',').map(&:strip)
